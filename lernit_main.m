@@ -1,5 +1,6 @@
 % Script lernit_main
-% Main preproc/analysis script lernit
+% Main preproc/analysis script lernit to create PhysIO regressors and
+% assess them via a nuisance-only GLM
 %
 %  lernit_main
 %
@@ -19,51 +20,67 @@
  
  
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% Setup paths
+%% Setup paths - #MOD# Modify to your own environment
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
- 
-pathCode = 'C:\Users\kasperla\OneDrive - UHN\Grants\2022\CIHR_Fidel\Pilot\code';
-addpath(pathCode);
+subjectId = 'sub-15';
+ % if true, only the SPM batch jobs are loaded, but you have to run them manually in the batch editor (play button)
+isInteractive = true;
+
+pathProject     = 'C:\Users\kasperla\OneDrive - UHN\Grants\2022\CIHR_Fidel\Pilot';
+pathCode        = fullfile(pathProject, 'code');
+pathResults     = fullfile(pathProject, 'results');
+pathSubject     = fullfile(pathResults, subjectId);
+
+addpath(genpath(pathCode));
 pathNow = pwd;
 
-pathSubject = 'C:\Users\kasperla\OneDrive - UHN\Grants\2022\CIHR_Fidel\Pilot\results\sub-15';
 
 cd(pathSubject);
 
+% folder structure created with in results folder of subject to hold
+% different preprocessed data
 mkdir('glm')
 mkdir('nifti')
 mkdir('glm_s3')
 mkdir('physio_out')
 
-
 %% Setup SPM Batch editor
 
-%spm_jobman('initcfg')
+% spm_jobman('initcfg')
 spm fmri
+
+if isInteractive
+    jobMode = 'interactive';
+else
+    jobMode = 'run';
+end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Spatial Preproc
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-spm_jobman('interactive', 'preproc_minimal_spm_job.m')
-
+spm_jobman(jobMode, 'preproc_minimal_spm_job.m')
+if isInteractive, input('Press Enter to continue'); end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Physio
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-spm_jobman('interactive', 'physio_spm_job.m')
+spm_jobman(jobMode, 'physio_spm_job.m')
+if isInteractive, input('Press Enter to continue'); end
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% GLM w/o smoothing
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-spm_jobman('interactive', 'glm_spm_job.m')
+spm_jobman(jobMode, 'glm_spm_job.m')
+if isInteractive, input('Press Enter to continue'); end
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Visualize PhysIO contrasts
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+% automatic contrast creation using PhysIO
 visualize_physio
