@@ -1,14 +1,14 @@
-% Script lernit_main
+% Script cubric_physio_main
 % Main preproc/analysis script lernit to create PhysIO regressors and
 % assess them via a nuisance-only GLM
 %
-%  lernit_main
+%  cubric_physio_main
 %
 %
 %   See also
  
 % Author:   Lars Kasper
-% Created:  2022-08-11
+% Created:  2022-11-20
 % Copyright (C) 2022
  
  
@@ -16,11 +16,11 @@
 %% Setup paths - #MOD# Modify to your own environment
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-subjectId = 'sub-15';
+subjectId = 'sub-01';
  % if true, only the SPM batch jobs are loaded, but you have to run them manually in the batch editor (play button)
 isInteractive = true;
 
-pathProject     = 'C:\Users\kasperla\OneDrive - UHN\Grants\2022\CIHR_Fidel\Pilot';
+pathProject     = 'C:\Users\kasperla\OneDrive - UHN\Collaborations\PhysIO\CUBRICTalk';
 pathCode        = fullfile(pathProject, 'code');
 pathResults     = fullfile(pathProject, 'results');
 pathSubject     = fullfile(pathResults, subjectId);
