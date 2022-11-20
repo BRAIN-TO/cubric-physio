@@ -19,6 +19,7 @@
 subjectId = 'sub-01';
  % if true, only the SPM batch jobs are loaded, but you have to run them manually in the batch editor (play button)
 isInteractive = true;
+hasStruct = false; % if false, uses (bias-corrected) mean of fmri.nii for visualizations
 
 pathProject     = 'C:\Users\kasperla\OneDrive - UHN\Collaborations\PhysIO\CUBRICTalk';
 pathCode        = fullfile(pathProject, 'code');
@@ -57,7 +58,12 @@ end
 %% Spatial Preproc
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-spm_jobman(jobMode, 'preproc_minimal_spm_job.m')
+if hasStruct
+    spm_jobman(jobMode, 'preproc_minimal_spm_job.m')
+else
+    spm_jobman(jobMode, 'preproc_minimal_no_struct_spm_job.m')
+end
+
 if isInteractive, input('Press Enter to continue'); end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
