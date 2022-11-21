@@ -1,12 +1,12 @@
 %-----------------------------------------------------------------------
-% Job saved on 20-Nov-2022 13:12:47 by cfg_util (rev $Rev: 7345 $)
+% Job saved on 20-Nov-2022 13:59:18 by cfg_util (rev $Rev: 7345 $)
 % spm SPM - SPM12 (7771)
 % cfg_basicio BasicIO - Unknown
 %-----------------------------------------------------------------------
 matlabbatch{1}.spm.tools.physio.save_dir = {'physio_out'};
 matlabbatch{1}.spm.tools.physio.log_files.vendor = 'Biopac_Txt';
-matlabbatch{1}.spm.tools.physio.log_files.cardiac = {'C:\Users\kasperla\OneDrive - UHN\Collaborations\PhysIO\CUBRICTalk\results\sub-01\SCANPHYSLOG.txt'};
-matlabbatch{1}.spm.tools.physio.log_files.respiration = {'C:\Users\kasperla\OneDrive - UHN\Collaborations\PhysIO\CUBRICTalk\results\sub-01\SCANPHYSLOG.txt'};
+matlabbatch{1}.spm.tools.physio.log_files.cardiac = {'SCANPHYSLOG.txt'};
+matlabbatch{1}.spm.tools.physio.log_files.respiration = {'SCANPHYSLOG.txt'};
 matlabbatch{1}.spm.tools.physio.log_files.scan_timing = {''};
 matlabbatch{1}.spm.tools.physio.log_files.sampling_interval = [];
 matlabbatch{1}.spm.tools.physio.log_files.relative_start_acquisition = 0;
@@ -39,7 +39,7 @@ matlabbatch{1}.spm.tools.physio.model.rvt.yes.method = 'hilbert';
 matlabbatch{1}.spm.tools.physio.model.rvt.yes.delays = 0;
 matlabbatch{1}.spm.tools.physio.model.hrv.yes.delays = 0;
 matlabbatch{1}.spm.tools.physio.model.noise_rois.no = struct([]);
-matlabbatch{1}.spm.tools.physio.model.movement.yes.file_realignment_parameters = {'C:\Users\kasperla\OneDrive - UHN\Collaborations\PhysIO\CUBRICTalk\results\sub-01\nifti\rp_fmri.txt'};
+matlabbatch{1}.spm.tools.physio.model.movement.yes.file_realignment_parameters = {'nifti/rp_fmri.txt'};
 matlabbatch{1}.spm.tools.physio.model.movement.yes.order = 6;
 matlabbatch{1}.spm.tools.physio.model.movement.yes.censoring_method = 'FD';
 matlabbatch{1}.spm.tools.physio.model.movement.yes.censoring_threshold = 1;

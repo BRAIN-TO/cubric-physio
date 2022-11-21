@@ -16,7 +16,7 @@
 %% Setup paths - #MOD# Modify to your own environment
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-subjectId = 'sub-01';
+subjectId = 'sub-02';
  % if true, only the SPM batch jobs are loaded, but you have to run them manually in the batch editor (play button)
 isInteractive = true;
 hasStruct = false; % if false, uses (bias-corrected) mean of fmri.nii for visualizations
@@ -25,6 +25,18 @@ pathProject     = 'C:\Users\kasperla\OneDrive - UHN\Collaborations\PhysIO\CUBRIC
 pathCode        = fullfile(pathProject, 'code');
 pathResults     = fullfile(pathProject, 'results');
 pathSubject     = fullfile(pathResults, subjectId);
+
+
+switch subjectId
+    case 'sub-01'
+        nSlices = 96/4; % nSlicesTotal/MB factor
+        TR = 1.5; % seconds
+        nVolumes = 400;
+    case 'sub-02'
+        nSlices = 46; % nSlicesTotal/MB factor
+        TR = 9; % seconds
+        nVolumes = 150;
+end
 
 addpath(genpath(pathCode));
 pathNow = pwd;
@@ -57,20 +69,41 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Spatial Preproc
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
 if hasStruct
-    spm_jobman(jobMode, 'preproc_minimal_spm_job.m')
+    fileJobPreproc = 'preproc_minimal_spm_job.m';
 else
-    spm_jobman(jobMode, 'preproc_minimal_no_struct_spm_job.m')
+    fileJobPreproc = 'preproc_minimal_no_struct_spm_job.m';
 end
 
+% loads matlabbatch and adapts subject-specific data
+clear matlabbatch
+run(fileJobPreproc)
+matlabbatch{1}.spm.spatial.realign.estwrite.data{1} = ...
+    cellstr(spm_select('ExtFPList', 'nifti', '^fmri.*', 1:nVolumes));
+
+spm_jobman(jobMode, matlabbatch)
+
 if isInteractive, input('Press Enter to continue'); end
+
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Physio
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-spm_jobman(jobMode, 'physio_spm_job.m')
+% loads matlabbatch and adapts subject-specific data
+clear matlabbatch
+
+fileJobPhysio = 'physio_spm_job.m';
+clear matlabbatch
+run(fileJobPhysio)
+matlabbatch{1}.spm.tools.physio.scan_timing.sqpar.Nscans = nVolumes;
+matlabbatch{1}.spm.tools.physio.scan_timing.sqpar.Nslices = nSlices;
+matlabbatch{1}.spm.tools.physio.scan_timing.sqpar.TR = TR;
+matlabbatch{1}.spm.tools.physio.scan_timing.sqpar.onset_slice = nSlices/2;
+
+spm_jobman(jobMode, matlabbatch)
+
 if isInteractive, input('Press Enter to continue'); end
 
 
