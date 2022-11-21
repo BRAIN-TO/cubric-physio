@@ -16,10 +16,12 @@
 %% Setup paths - #MOD# Modify to your own environment
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-subjectId = 'sub-02';
+subjectId = 'sub-01';
  % if true, only the SPM batch jobs are loaded, but you have to run them manually in the batch editor (play button)
 isInteractive = true;
 hasStruct = false; % if false, uses (bias-corrected) mean of fmri.nii for visualizations
+doSmooth = true;
+
 
 pathProject     = 'C:\Users\kasperla\OneDrive - UHN\Collaborations\PhysIO\CUBRICTalk';
 pathCode        = fullfile(pathProject, 'code');
@@ -108,10 +110,32 @@ if isInteractive, input('Press Enter to continue'); end
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% GLM w/o smoothing
+%% GLM with or w/o smoothing
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-spm_jobman(jobMode, 'glm_spm_job.m')
+
+if doSmooth
+    fileJobGlm = 'glm_s3_spm_job.m';
+else
+    fileJobGlm = 'glm_spm_job.m';
+end
+clear matlabbatch
+run(fileJobGlm)
+
+if doSmooth
+    matlabbatch{1}.spm.stats.fmri_spec.sess.scans = ...
+        cellstr(spm_select('ExtFPList', 'nifti', '^srfmri.*', 1:nVolumes));
+else
+    matlabbatch{1}.spm.stats.fmri_spec.sess.scans = ...
+        cellstr(spm_select('ExtFPList', 'nifti', '^rfmri.*', 1:nVolumes));
+end
+
+matlabbatch{1}.spm.stats.fmri_spec.timing.fmri_t = nSlices;
+matlabbatch{1}.spm.stats.fmri_spec.timing.RT = TR;
+matlabbatch{1}.spm.stats.fmri_spec.timing.fmri_t0 = nSlices/2;
+
+spm_jobman(jobMode, matlabbatch)
+
 if isInteractive, input('Press Enter to continue'); end
 
 
