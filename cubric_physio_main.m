@@ -16,7 +16,7 @@
 %% Setup paths - #MOD# Modify to your own environment
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-subjectId = 'sub-01';
+subjectId = 'sub-02';
  % if true, only the SPM batch jobs are loaded, but you have to run them manually in the batch editor (play button)
 isInteractive = true;
 hasStruct = false; % if false, uses (bias-corrected) mean of fmri.nii for visualizations
@@ -103,6 +103,23 @@ matlabbatch{1}.spm.tools.physio.scan_timing.sqpar.Nscans = nVolumes;
 matlabbatch{1}.spm.tools.physio.scan_timing.sqpar.Nslices = nSlices;
 matlabbatch{1}.spm.tools.physio.scan_timing.sqpar.TR = TR;
 matlabbatch{1}.spm.tools.physio.scan_timing.sqpar.onset_slice = nSlices/2;
+
+switch subjectId
+    case 'sub-01'
+        % defaults OK in file
+    case 'sub-02'
+        matlabbatch{1}.spm.tools.physio.log_files.align_scan = 'first';
+        % only 150 volumes, we don't want to reduce degrees of freedom too much
+        matlabbatch{1}.spm.tools.physio.model.movement.yes.censoring_threshold = 2;
+
+        % too noisy cardiac data, has to be bandpass-filtered (default
+        % values)
+        matlabbatch{1}.spm.tools.physio.preproc.cardiac.filter = rmfield(...
+            matlabbatch{1}.spm.tools.physio.preproc.cardiac.filter, 'no');
+        matlabbatch{1}.spm.tools.physio.preproc.cardiac.filter.yes.type = 'cheby2';
+        matlabbatch{1}.spm.tools.physio.preproc.cardiac.filter.yes.passband = [0.3 9];
+        matlabbatch{1}.spm.tools.physio.preproc.cardiac.filter.yes.stopband = [];
+end
 
 spm_jobman(jobMode, matlabbatch)
 
