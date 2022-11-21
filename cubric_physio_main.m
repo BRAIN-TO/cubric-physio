@@ -16,7 +16,7 @@
 %% Setup paths - #MOD# Modify to your own environment
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-subjectId = 'sub-02';
+subjectId = 'sub-01';
  % if true, only the SPM batch jobs are loaded, but you have to run them manually in the batch editor (play button)
 isInteractive = true;
 hasStruct = false; % if false, uses (bias-corrected) mean of fmri.nii for visualizations
