@@ -4,7 +4,7 @@
 % cfg_basicio BasicIO - Unknown
 %-----------------------------------------------------------------------
 matlabbatch{1}.spm.tools.physio.save_dir = {'physio_out'};
-matlabbatch{1}.spm.tools.physio.log_files.vendor = 'Biopac_Txt';
+matlabbatch{1}.spm.tools.physio.log_files.vendor = 'ADInstruments_Txt';
 matlabbatch{1}.spm.tools.physio.log_files.cardiac = {'SCANPHYSLOG.txt'};
 matlabbatch{1}.spm.tools.physio.log_files.respiration = {'SCANPHYSLOG.txt'};
 matlabbatch{1}.spm.tools.physio.log_files.scan_timing = {''};
